@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Website configurator — Digital for Business</title>
-<meta name="description" content="Pick a niche, a look and the blocks you need — the website assembles in front of you. A configurator by Arseny Asyanov, who builds sites from idea to launch.">
+<title>Website configurator · Digital for Business</title>
+<meta name="description" content="Pick a niche, a look and the blocks you need, and watch the website being assembled next to you. A configurator by Arseny Asyanov, who builds sites from idea to launch.">
 <meta name="theme-color" content="#E9EDF3">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Website configurator — Digital for Business">
-<meta property="og:description" content="Pick a niche, a look and the blocks — see the page before we talk money.">
+<meta property="og:title" content="Website configurator · Digital for Business">
+<meta property="og:description" content="Pick a niche, a look and the blocks, and see the page before we talk money.">
 <link rel="canonical" href="https://strangehul1-design.github.io/site-configurator/">
 <link rel="alternate" hreflang="en" href="https://strangehul1-design.github.io/site-configurator/">
 <link rel="alternate" hreflang="ru" href="https://strangehul1-design.github.io/site-configurator/ru/">
@@ -18,7 +18,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E9EDF3'/%3E%3Cg stroke='%230B1220' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M14 20h36M14 32h36M14 44h36'/%3E%3C/g%3E%3Cg fill='%232F5BFF'%3E%3Ccircle cx='26' cy='20' r='7'/%3E%3Ccircle cx='40' cy='32' r='7'/%3E%3Ccircle cx='22' cy='44' r='7'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Onest:wght@400;500&family=Unbounded:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Onest:wght@400;500;600&family=Unbounded:wght@600&display=swap">
 <link rel="stylesheet" href="assets/css/app.css">
 <script>document.documentElement.className = 'js';</script>
 <script src="assets/js/data.js" defer></script>
@@ -26,65 +26,59 @@
 <script src="assets/js/app.js" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#build">Skip to the configurator</a>
+<a class="skip-link" href="#choices">Skip to the choices</a>
 
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="https://strangehul1-design.github.io/web-chef-portfolio/" translate="no"><span>DIGITAL FOR BUSINESS</span><span class="sep"> · </span><span class="brand__tail">CONFIGURATOR</span></a>
-    <div class="header__right">
-      <a class="header__link" href="https://strangehul1-design.github.io/web-chef-portfolio/">Portfolio</a>
-      <div class="lang-switch" role="group" aria-label="Language">
-        <span class="lang-switch__opt" aria-current="true">EN</span>
-        <a class="lang-switch__opt" href="ru/" hreflang="ru" lang="ru" data-lang-switch aria-label="Русская версия">RU</a>
+<header class="top">
+  <div class="top__in">
+    <a class="brand" href="https://strangehul1-design.github.io/web-chef-portfolio/" translate="no">Digital for Business</a>
+    <div class="top__right">
+      <a class="top__link" href="https://strangehul1-design.github.io/web-chef-portfolio/">Portfolio</a>
+      <div class="lang" role="group" aria-label="Language">
+        <span class="lang__opt" aria-current="true">EN</span>
+        <a class="lang__opt" href="ru/" hreflang="ru" lang="ru" data-lang-switch aria-label="Русская версия">RU</a>
       </div>
     </div>
   </div>
 </header>
 
-<main>
-  <section class="intro">
-    <div class="wrap">
-      <p class="kicker">Website configurator</p>
-      <h1>See your website<br>before we talk money</h1>
-      <p>Pick a niche, a look and the blocks you need — the page assembles next to you as you go. Nothing is sent anywhere: it is built right in your browser, and the link carries your build.</p>
+<main class="desk">
+  <div class="intro">
+    <h1>Build the site you want, and look at it</h1>
+    <p>Pick a niche, a look and the blocks. The page is assembled on the right as you choose, and the link keeps your build.</p>
+  </div>
+
+  <section class="panel" id="choices" aria-label="Your choices">
+    <div class="panel__scroll">
+      <ol class="steps" data-steps></ol>
+      <noscript>
+        <p class="note">The configurator needs JavaScript to assemble the preview. Message me on Telegram (<a href="https://t.me/tacokinggl1">@tacokinggl1</a>) instead and I will build a version and send you the link.</p>
+      </noscript>
+    </div>
+    <div class="panel__bar">
+      <p class="tally" data-tally></p>
+      <button class="btn btn--primary" type="button" data-act="tg">Message on Telegram</button>
     </div>
   </section>
 
-  <section class="cfg" id="build">
-    <div class="wrap">
-      <div class="cfg__grid">
-        <div>
-          <h2 class="sr-only">Your choices</h2>
-          <ol class="steps" data-steps></ol>
-          <noscript>
-            <p class="pv__note">The configurator needs JavaScript to assemble the preview. Message me on Telegram (<a href="https://t.me/tacokinggl1">@tacokinggl1</a>) instead and I will build a version and send you the link.</p>
-          </noscript>
-        </div>
-
-        <div class="pv">
-          <h2 class="sr-only">Preview</h2>
-          <div class="pv__bar">
-            <span class="pv__title">Preview</span>
-            <div class="seg" role="group" aria-label="Preview width">
-              <button type="button" data-device="desktop" aria-pressed="true">Desktop</button>
-              <button type="button" data-device="mobile" aria-pressed="false">Phone</button>
-            </div>
-            <button class="btn btn--sm" type="button" data-act="full">Open full size</button>
-            <button class="btn btn--sm" type="button" data-act="reset">Reset</button>
-          </div>
-          <div class="pv__box"><div class="pv__stage" data-stage></div></div>
-          <p class="pv__note">Demo content: the business name is made up, photos and prices are placeholders. Your site gets your photos, your prices and your words.</p>
-        </div>
+  <section class="stage" aria-label="Preview">
+    <div class="stage__bar">
+      <p class="stage__title" data-stage-title></p>
+      <div class="seg" role="group" aria-label="Preview width">
+        <button type="button" data-device="desktop" aria-pressed="true">Computer</button>
+        <button type="button" data-device="mobile" aria-pressed="false">Phone</button>
       </div>
+      <button class="btn btn--quiet btn--sm" type="button" data-act="reset">Start over</button>
     </div>
+    <div class="stage__desk">
+      <div class="screen" data-stage></div>
+    </div>
+    <p class="stage__note">Demo content: the business name is made up, photos and prices are placeholders. Your site gets your photos, your prices and your words.</p>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <p>Arseny Asyanov — websites from idea to launch. <a href="https://strangehul1-design.github.io/web-chef-portfolio/">See the portfolio</a></p>
-    <p><a href="https://t.me/tacokinggl1">Telegram</a> · <a href="https://vk.com/taco_kinggl1">VK</a> · <a href="mailto:digitalgl1@mail.ru">digitalgl1@mail.ru</a></p>
-  </div>
+<footer class="foot">
+  <p>Arseny Asyanov builds websites from idea to launch. <a href="https://strangehul1-design.github.io/web-chef-portfolio/">See the portfolio</a></p>
+  <p><a href="https://t.me/tacokinggl1">Telegram</a>, <a href="https://vk.com/taco_kinggl1">VK</a>, <a href="mailto:digitalgl1@mail.ru">digitalgl1@mail.ru</a></p>
 </footer>
 </body>
 </html>
