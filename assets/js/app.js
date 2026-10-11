@@ -1,9 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════
    Конфигуратор: выбор, состояние и связь с рамкой предпросмотра.
 
-   Состояние целиком лежит в адресе страницы (#n=…&t=…&b=…), поэтому
-   собранный вариант можно отправить ссылкой — откроется ровно он.
-   Ничего никуда не отправляется: страница собирается в браузере.
+   Состояние целиком лежит в адресе страницы (#n=...&t=...&b=...),
+   поэтому собранный вариант можно отправить ссылкой - откроется
+   ровно он. Ничего никуда не уходит: страница собирается в браузере.
+
+   Рамка показывает сайт в натуральную величину: на широком экране
+   ширина рамки равна свободному месту на столе, уменьшение включается
+   только если места меньше 900 px. Телефон - всегда ровно 390 px.
    ═══════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -15,19 +19,22 @@
   var T = CFG.ui[lang];
   var byId = PV.byId;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  // Рамка рисует настоящую ширину устройства, а в столбец вписывается уменьшением.
-  // 1024 вместо 1280: в узком столбце текст 1280-й страницы читался бы слишком мелко.
-  var FRAME = { desktop: { w: 1024, h: 760 }, mobile: { w: 390, h: 640 } };
   var NARROW = 1040;
 
-  /* ── Состояние ───────────────────────────────────────────────── */
   var state = {
     niche: CFG.niches[0].id,
     theme: CFG.themes[0].id,
     blocks: CFG.blocks.filter(function (b) { return b.on; }).map(function (b) { return b.id; }),
     device: 'desktop'
   };
+  var deviceChosen = false; // пока человек сам не выбрал, рамка следует за шириной экрана
+  var frame, screen, deskArea, brief, tally, stageTitle, doc = null;
+
+  /* ── Адрес страницы хранит сборку ────────────────────────────── */
+  function ordered() {
+    return CFG.blocks.map(function (b) { return b.id; })
+      .filter(function (id) { return state.blocks.indexOf(id) >= 0; });
+  }
 
   function readHash() {
     var h = location.hash.replace(/^#/, '');
@@ -45,20 +52,9 @@
     }
   }
 
-  // блоки держим в порядке страницы: так ссылка и ТЗ читаются ровно
-  function ordered() {
-    var ids = CFG.blocks.map(function (x) { return x.id; });
-    return ids.filter(function (id) { return state.blocks.indexOf(id) >= 0; });
-  }
-
-  function writeHash() {
-    var h = '#n=' + state.niche + '&t=' + state.theme + '&b=' + ordered().join(',');
-    if (location.hash !== h) history.replaceState(null, '', h);
-  }
-
-  function buildUrl() {
-    return location.href.split('#')[0] + '#n=' + state.niche + '&t=' + state.theme + '&b=' + ordered().join(',');
-  }
+  function hashPart() { return '#n=' + state.niche + '&t=' + state.theme + '&b=' + ordered().join(','); }
+  function writeHash() { if (location.hash !== hashPart()) history.replaceState(null, '', hashPart()); }
+  function buildUrl() { return location.href.split('#')[0] + hashPart(); }
 
   /* ── Разметка выбора ─────────────────────────────────────────── */
   var icons = {
@@ -74,10 +70,15 @@
     return '<svg class="opt__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="' + icons[name] + '"/></svg>';
   }
 
+  function step(num, title, note, body) {
+    return '<li class="step"><div class="step__head"><span class="step__n">' + num + '</span>' +
+      '<h2 class="step__t">' + title + '</h2></div>' +
+      '<p class="step__note">' + note + '</p>' + body + '</li>';
+  }
+
   function panel() {
     var html = '';
 
-    // 1. Ниша
     html += step(1, T.steps[0], T.stepNote[0],
       '<div class="opts opts--niche">' + CFG.niches.map(function (n) {
         return '<label class="opt"><input type="radio" name="niche" value="' + n.id + '"' +
@@ -87,62 +88,54 @@
           '<span class="opt__h">' + n.hint[lang] + '</span></span></label>';
       }).join('') + '</div>');
 
-    // 2. Оформление
     html += step(2, T.steps[1], T.stepNote[1],
       '<div class="opts opts--theme">' + CFG.themes.map(function (t) {
+        var k = t.tokens;
+        var style = '--t-bg:' + k.bg + ';--t-ink:' + k.ink + ';--t-accent:' + k.accent + ';';
         return '<label class="opt"><input type="radio" name="theme" value="' + t.id + '"' +
           (t.id === state.theme ? ' checked' : '') + '>' +
-          '<span class="opt__body"><span class="swatch" aria-hidden="true">' +
-          t.swatch.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('') + '</span>' +
+          '<span class="opt__body">' +
+          '<span class="thumb" style="' + style + '" aria-hidden="true">' +
+          '<i class="thumb__h"></i><i class="thumb__p"></i><i class="thumb__p2"></i><i class="thumb__btn"></i></span>' +
           '<span class="opt__t">' + t.label[lang] + '</span>' +
           '<span class="opt__h">' + t.hint[lang] + '</span></span></label>';
       }).join('') + '</div>');
 
-    // 3. Блоки
     html += step(3, T.steps[2], T.stepNote[2],
-      '<div class="opts opts--block">' + CFG.blocks.map(function (b) {
-        return '<label class="opt opt--check"><input type="checkbox" name="block" value="' + b.id + '"' +
+      '<div class="opts">' + CFG.blocks.map(function (b) {
+        return '<label class="opt opt--switch"><input type="checkbox" name="block" value="' + b.id + '"' +
           (state.blocks.indexOf(b.id) >= 0 ? ' checked' : '') + '>' +
-          '<span class="opt__body"><span class="tick" aria-hidden="true"></span>' +
+          '<span class="opt__body">' +
           '<span class="opt__t">' + b.label[lang] + '</span>' +
-          '<span class="opt__h">' + b.hint[lang] + '</span></span></label>';
+          '<span class="opt__h">' + b.hint[lang] + '</span>' +
+          '<span class="switch"></span></span></label>';
       }).join('') + '</div>');
 
-    // 4. Итог
     html += step(4, T.steps[3], T.stepNote[3],
       '<div class="sum">' +
       '<dl class="brief" id="brief"></dl>' +
-      '<div class="pricebox">' +
-      '<h4>' + T.priceTitle + '</h4>' +
-      '<p class="pricebox__main">' + T.priceMain + '</p>' +
-      '<p class="pricebox__note">' + T.priceMainNote + '</p>' +
-      '<ul class="pricebox__rows">' + T.priceRows.map(function (r) {
+      '<div class="quote">' +
+      '<p class="quote__main">' + T.priceMain + '</p>' +
+      '<p class="quote__note">' + T.priceMainNote + '</p>' +
+      '<ul class="quote__rows">' + T.priceRows.map(function (r) {
         return '<li><span>' + r[0] + '</span><span class="dots"></span><b>' + r[1] + '</b></li>';
       }).join('') + '</ul>' +
-      '<p class="pricebox__note">' + T.priceNote + '</p></div>' +
-      '<h4>' + T.sendTitle + '</h4>' +
+      '<p class="quote__note">' + T.priceNote + '</p></div>' +
       '<div class="acts">' +
       '<button class="btn btn--primary" type="button" data-act="tg">' + T.tg + '</button>' +
+      '<div class="acts acts--row">' +
       '<button class="btn" type="button" data-act="mail">' + T.mail + '</button>' +
       '<button class="btn" type="button" data-act="link">' + T.copyLink + '</button>' +
-      '</div>' +
-      '<p class="acts__note">' + T.tgNote + ' · ' + T.copyLinkNote + '</p>' +
-      '<p class="acts__note"><a href="https://vk.com/' + CFG.contacts.vk + '" target="_blank" rel="noopener">' + T.vk + '</a> · ' +
+      '</div></div>' +
+      '<p class="acts__note">' + T.tgNote + ' ' + T.copyLinkNote + '</p>' +
+      '<p class="acts__note"><a href="https://vk.com/' + CFG.contacts.vk + '" target="_blank" rel="noopener">' + T.vk + '</a>, ' +
       '<a href="mailto:' + CFG.contacts.mail + '">' + CFG.contacts.mail + '</a></p>' +
       '</div>');
 
     return html;
   }
 
-  function step(num, title, note, body) {
-    return '<li class="step reveal"><div class="step__head"><span class="step__n">0' + num + '</span>' +
-      '<div><h3 class="step__t">' + title + '</h3><p class="step__note">' + note + '</p></div></div>' + body + '</li>';
-  }
-
   /* ── Сборка интерфейса ───────────────────────────────────────── */
-  var frame, stage, doc = null, brief;
-  var deviceChosen = false; // пока человек сам не выбрал, рамка следует за шириной экрана
-
   function init() {
     readHash();
     writeHash();
@@ -150,18 +143,16 @@
 
     document.querySelector('[data-steps]').innerHTML = panel();
     brief = document.getElementById('brief');
+    tally = document.querySelector('[data-tally]');
+    stageTitle = document.querySelector('[data-stage-title]');
+    screen = document.querySelector('[data-stage]');
+    deskArea = screen.parentNode;
+    markDevice();
 
-    Array.prototype.forEach.call(document.querySelectorAll('[data-device]'), function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-device') === state.device));
-    });
-
-    stage = document.querySelector('[data-stage]');
     frame = document.createElement('iframe');
-    frame.className = 'pv__frame';
     frame.title = T.previewTitle;
-    frame.setAttribute('scrolling', 'yes');
     frame.srcdoc = PV.shell();
-    stage.appendChild(frame);
+    screen.appendChild(frame);
     frame.addEventListener('load', function () {
       doc = frame.contentDocument;
       PV.setTheme(doc, byId(CFG.themes, state.theme));
@@ -169,60 +160,64 @@
     });
 
     size();
-    if ('ResizeObserver' in window) new ResizeObserver(size).observe(stage.parentNode);
+    if ('ResizeObserver' in window) new ResizeObserver(size).observe(deskArea);
     window.addEventListener('resize', size);
 
     document.addEventListener('change', onChange);
     document.addEventListener('click', onClick);
-    window.addEventListener('hashchange', function () {
-      readHash();
-      sync();
-    });
+    window.addEventListener('hashchange', function () { readHash(); sync(); });
+
     // переключатель языка уносит сборку с собой: она лежит в адресе
     Array.prototype.forEach.call(document.querySelectorAll('[data-lang-switch]'), function (link) {
       var base = link.getAttribute('href').split('#')[0];
-      link.addEventListener('click', function () { link.setAttribute('href', base + location.hash); });
+      link.addEventListener('click', function () { link.setAttribute('href', base + hashPart()); });
     });
 
-    updateBrief();
-    reveal();
+    updateSummary();
   }
 
-  /* масштаб: рамка всегда рисует настоящую ширину (1280 или 390),
-     а в панель вписывается уменьшением */
+  /* рамка: ширина равна свободному месту (уменьшаем, только если тесно) */
   function autoDevice() {
     if (deviceChosen) return;
     var want = window.innerWidth < 700 ? 'mobile' : 'desktop';
     if (want === state.device) return;
     state.device = want;
+    markDevice();
+  }
+
+  function markDevice() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-device]'), function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-device') === want));
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-device') === state.device));
     });
+    screen.classList.toggle('screen--phone', state.device === 'mobile');
   }
 
   function size() {
     autoDevice();
-    var f = FRAME[state.device];
-    var narrow = window.innerWidth <= NARROW;
-    var box = stage.parentNode.getBoundingClientRect().width - 20; // минус отступы рамки
-    var maxH = window.innerHeight * (narrow ? 0.92 : 0.78);
-    var scale = Math.min(1, box / f.w, maxH / f.h);
-    frame.style.width = f.w + 'px';
-    frame.style.height = f.h + 'px';
-    frame.style.transform = 'scale(' + scale + ')';
-    stage.style.width = Math.round(f.w * scale) + 'px';
-    stage.style.height = Math.round(f.h * scale) + 'px';
+    var cs = window.getComputedStyle(deskArea);
+    var availW = deskArea.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var availH = deskArea.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (availW < 200 || availH < 200) return;
+    var w = state.device === 'mobile' ? 390 : Math.max(900, Math.floor(availW)); // 900 - ниже этого собранная страница сама переходит в узкую раскладку
+    var h = Math.max(state.device === 'mobile' ? 420 : 620, Math.floor(availH));
+    var scale = Math.min(1, availW / w, availH / h);
+    frame.style.width = w + 'px';
+    frame.style.height = h + 'px';
+    frame.style.transform = scale === 1 ? 'none' : 'scale(' + scale + ')';
+    screen.style.width = Math.round(w * scale) + 'px';
+    screen.style.height = Math.round(h * scale) + 'px';
   }
 
-  // На телефоне предпросмотр стоит над шагами: если он уехал с экрана,
-  // подводим страницу к нему, чтобы изменение было видно.
+  /* на узком экране стол стоит над выбором: подводим страницу к нему */
   function showStage() {
-    if (window.innerWidth > NARROW || reduced.matches) return;
-    var r = stage.getBoundingClientRect();
-    if (r.bottom > 140 && r.top < window.innerHeight - 160) return;
-    window.scrollTo({ top: Math.max(0, window.scrollY + r.top - 76), behavior: 'smooth' });
+    if (window.innerWidth > NARROW) return;
+    var r = screen.getBoundingClientRect();
+    if (r.bottom > 160 && r.top < window.innerHeight - 180) return;
+    // при уменьшенном движении переносимся сразу, а не плавно
+    window.scrollTo({ top: Math.max(0, window.scrollY + r.top - 70), behavior: reduced.matches ? 'auto' : 'smooth' });
   }
 
+  /* ── Действия ────────────────────────────────────────────────── */
   function onChange(e) {
     var el = e.target;
     if (el.name === 'niche') {
@@ -241,14 +236,14 @@
       if (on && i < 0) state.blocks.push(id);
       if (!on && i >= 0) state.blocks.splice(i, 1);
       if (doc) {
-        var added = PV.toggle(doc, state, lang, id, on);
-        if (added && !reduced.matches && id !== 'messengers') {
-          added.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var added = PV.toggle(doc, state, lang, id, on, reduced.matches);
+        if (added && id !== 'messengers') {
+          added.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'center' });
         }
       }
     } else return;
     writeHash();
-    updateBrief();
+    updateSummary();
     showStage();
   }
 
@@ -257,19 +252,14 @@
     if (dev) {
       state.device = dev.getAttribute('data-device');
       deviceChosen = true;
-      Array.prototype.forEach.call(document.querySelectorAll('[data-device]'), function (b) {
-        b.setAttribute('aria-pressed', String(b === dev));
-      });
+      markDevice();
       size();
       return;
     }
     var act = e.target.closest('[data-act]');
     if (!act) return;
     var kind = act.getAttribute('data-act');
-    if (kind === 'full') {
-      var blob = new Blob([PV.standalone(state, lang)], { type: 'text/html' });
-      window.open(URL.createObjectURL(blob), '_blank', 'noopener');
-    } else if (kind === 'reset') {
+    if (kind === 'reset') {
       state.niche = CFG.niches[0].id;
       state.theme = CFG.themes[0].id;
       state.blocks = CFG.blocks.filter(function (b) { return b.on; }).map(function (b) { return b.id; });
@@ -288,21 +278,35 @@
     }
   }
 
-  /* ── Итоговое ТЗ ─────────────────────────────────────────────── */
+  /* ── Итог: ТЗ, счётчик и подпись над столом ──────────────────── */
   function names() {
-    var n = byId(CFG.niches, state.niche);
-    var t = byId(CFG.themes, state.theme);
-    var bs = CFG.blocks.filter(function (b) { return state.blocks.indexOf(b.id) >= 0; })
-      .map(function (b) { return b.label[lang]; });
-    return { niche: n.label[lang], theme: t.label[lang], blocks: bs };
+    return {
+      niche: byId(CFG.niches, state.niche).label[lang],
+      theme: byId(CFG.themes, state.theme).label[lang],
+      blocks: CFG.blocks.filter(function (b) { return state.blocks.indexOf(b.id) >= 0; })
+        .map(function (b) { return b.label[lang]; })
+    };
   }
 
-  function updateBrief() {
+  function blocksWord(n) {
+    var w = T.blocksN;
+    if (lang !== 'ru') return n + ' ' + (n === 1 ? w[0] : w[1]);
+    var t = n % 100;
+    if (t > 10 && t < 20) return n + ' ' + w[2];
+    var o = n % 10;
+    if (o === 1) return n + ' ' + w[0];
+    if (o > 1 && o < 5) return n + ' ' + w[1];
+    return n + ' ' + w[2];
+  }
+
+  function updateSummary() {
     var v = names();
     brief.innerHTML =
       '<div><dt>' + T.briefNiche + '</dt><dd>' + v.niche + '</dd></div>' +
       '<div><dt>' + T.briefTheme + '</dt><dd>' + v.theme + '</dd></div>' +
-      '<div><dt>' + T.briefBlocks + '</dt><dd>' + (v.blocks.length ? v.blocks.join(', ') : '—') + '</dd></div>';
+      '<div><dt>' + T.briefBlocks + '</dt><dd>' + (v.blocks.length ? v.blocks.join(', ') : T.none) + '</dd></div>';
+    tally.innerHTML = '<b>' + blocksWord(v.blocks.length) + ' ' + T.inBuild + '</b>' + T.tallyPrice;
+    stageTitle.innerHTML = '<b>' + v.niche + '</b>, ' + v.theme.toLowerCase();
   }
 
   function briefText() {
@@ -310,7 +314,7 @@
     return T.briefHead + '\n' +
       T.briefLine[0] + ': ' + v.niche + '\n' +
       T.briefLine[1] + ': ' + v.theme + '\n' +
-      T.briefLine[2] + ': ' + (v.blocks.length ? v.blocks.join(', ') : '—') + '\n' +
+      T.briefLine[2] + ': ' + (v.blocks.length ? v.blocks.join(', ') : T.none) + '\n' +
       T.briefLine[3] + ': ' + buildUrl();
   }
 
@@ -325,23 +329,25 @@
       a.style.cssText = 'position:fixed;top:-1000px;opacity:0';
       document.body.appendChild(a);
       a.select();
-      try { document.execCommand('copy'); } catch (err) { /* ничего не делаем */ }
+      try { document.execCommand('copy'); } catch (err) { /* без буфера остаётся ссылка в адресе */ }
       document.body.removeChild(a);
     }
   }
 
   function flash(btn) {
-    var old = btn.getAttribute('data-label') || btn.textContent;
-    btn.setAttribute('data-label', old);
+    if (btn.dataset.busy) return;
+    btn.dataset.busy = '1';
+    var old = btn.textContent;
     btn.textContent = T.copied;
     btn.classList.add('is-done');
     setTimeout(function () {
       btn.textContent = old;
       btn.classList.remove('is-done');
-    }, 1600);
+      delete btn.dataset.busy;
+    }, 1500);
   }
 
-  /* ── Привести интерфейс к состоянию (после reset и hashchange) ── */
+  /* ── Привести интерфейс к состоянию (сброс, переход по ссылке) ── */
   function sync() {
     Array.prototype.forEach.call(document.querySelectorAll('input[name="niche"]'), function (i) { i.checked = i.value === state.niche; });
     Array.prototype.forEach.call(document.querySelectorAll('input[name="theme"]'), function (i) { i.checked = i.value === state.theme; });
@@ -350,25 +356,7 @@
       PV.setTheme(doc, byId(CFG.themes, state.theme));
       PV.render(doc, state, lang, !reduced.matches);
     }
-    updateBrief();
-  }
-
-  /* ── Появление блоков конфигуратора при прокрутке ─────────────── */
-  function reveal() {
-    var items = document.querySelectorAll('.reveal');
-    if (reduced.matches || !('IntersectionObserver' in window)) {
-      Array.prototype.forEach.call(items, function (el) { el.classList.add('in'); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          en.target.classList.add('in');
-          io.unobserve(en.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -10% 0px' });
-    Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+    updateSummary();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

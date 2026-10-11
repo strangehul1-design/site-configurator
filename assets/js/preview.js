@@ -1,13 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════
    Сборка страницы в рамке предпросмотра.
 
-   Рамка — <iframe> с srcdoc, то есть того же происхождения: можно
+   Рамка - <iframe> с srcdoc, то есть того же происхождения: можно
    менять её содержимое из родительской страницы. Поэтому страница
-   не перезагружается на каждый щелчок — меняются переменные темы и
+   не перезагружается на каждый щелчок - меняются переменные темы и
    добавляются или убираются отдельные блоки. За счёт этого видно,
    как сайт собирается: блок приезжает снизу, цвета переходят плавно.
 
-   Внутри рамки — собственный маленький набор стилей, он не связан
+   Внутри рамки - собственный маленький набор стилей, он не связан
    со стилями конфигуратора: тема задаётся переменными на :root.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -34,7 +34,7 @@ window.CFGPreview = (function () {
     ':root{--bg:#fff;--surface:#f4f6f9;--ink:#111;--muted:#666;--line:#e3e3e3;--accent:#2F5BFF;--accent-2:#2F5BFF;--on-accent:#fff;--accent-soft:rgba(47,91,255,.08);',
     '--display:system-ui,sans-serif;--body:system-ui,sans-serif;--display-weight:800;--display-tracking:-.02em;--display-case:none;',
     '--radius:16px;--radius-sm:10px;--btn-radius:10px;--hero-pad:88px;--shadow:0 18px 40px rgba(0,0,0,.07);',
-    '--ease:cubic-bezier(.22,.8,.38,1)}',
+    '--ease:cubic-bezier(.2,0,0,1)}',
     'html{background:var(--bg)}',
     'body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;',
     'transition:background-color .45s var(--ease),color .45s var(--ease)}',
@@ -59,7 +59,8 @@ window.CFGPreview = (function () {
     '.hd a.nav{color:var(--muted);text-decoration:none;font-size:14px}',
     '.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;',
     'border:1px solid var(--accent);border-radius:var(--btn-radius);background:var(--accent);color:var(--on-accent);',
-    'font:inherit;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;transition:transform .2s var(--ease),filter .2s var(--ease)}',
+    'font:inherit;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;transition:transform .14s var(--ease)}',
+    '.btn:active{transform:scale(.985)}',
     '.btn--ghost{background:transparent;color:var(--ink);border-color:var(--line)}',
     '.btn--sm{min-height:38px;padding:0 14px;font-size:14px}',
     /* первый экран */
@@ -98,12 +99,14 @@ window.CFGPreview = (function () {
     '.faq summary{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:18px 0;cursor:pointer;font-weight:500;list-style:none}',
     '.faq summary::-webkit-details-marker{display:none}',
     '.faq summary::after{content:"+";color:var(--accent-2);font-size:20px;line-height:1}',
-    '.faq details[open] summary::after{content:"–"}',
+    '.faq details[open] summary::after{content:"-"}',
     '.faq p{color:var(--muted);padding-bottom:18px;max-width:60ch}',
     /* запись */
     '.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}',
     '.chip{min-height:44px;padding:0 16px;display:inline-flex;align-items:center;border:1px solid var(--line);',
-    'border-radius:var(--btn-radius);background:var(--surface);color:var(--ink);font:inherit;font-size:15px;cursor:pointer;transition:all .2s var(--ease)}',
+    'border-radius:var(--btn-radius);background:var(--surface);color:var(--ink);font:inherit;font-size:15px;cursor:pointer;',
+    'transition:background-color .14s var(--ease),color .14s var(--ease),border-color .14s var(--ease),transform .14s var(--ease)}',
+    '.chip:active{transform:scale(.985)}',
     '.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}',
     '.sub{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:24px}',
     /* карта и форма */
@@ -130,9 +133,17 @@ window.CFGPreview = (function () {
     '.msg__b{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:999px;',
     'background:var(--accent);color:var(--on-accent);text-decoration:none;font-size:15px;font-weight:500;box-shadow:var(--shadow)}',
     '.msg__b--2{background:var(--surface);color:var(--ink);border:1px solid var(--line)}',
-    /* появление блока */
-    '@keyframes pvIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}',
-    '.pv-in{animation:pvIn .55s var(--ease) both;animation-delay:var(--d,0s)}',
+    /* приход и уход блока: едет высота, содержимое подхватывает */
+    '.slot{display:grid;grid-template-rows:1fr;transition:grid-template-rows .48s var(--ease)}',
+    '.slot > *{min-height:0;overflow:hidden}',
+    '.slot.is-shut{grid-template-rows:0fr}',
+    '.slot .wrap{transition:opacity .34s var(--ease),transform .34s var(--ease)}',
+    '.slot.is-shut .wrap{opacity:0;transform:translateY(10px)}',
+    '.msg{transition:opacity .34s var(--ease),transform .34s var(--ease)}',
+    '.msg.is-shut{opacity:0;transform:translateY(12px)}',
+    /* первая сборка: блоки приезжают по очереди */
+    '@keyframes pvIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}',
+    '.pv-in{animation:pvIn .48s var(--ease) both;animation-delay:var(--d,0s)}',
     '@media (max-width:860px){',
     '.hero__in,.map{grid-template-columns:1fr}.grid3,.rev{grid-template-columns:1fr}.gal{grid-template-columns:1fr 1fr}',
     '.hd nav{display:none}.hero{padding-top:52px;padding-bottom:52px}',
@@ -260,10 +271,11 @@ window.CFGPreview = (function () {
         '<a class="msg__b msg__b--2" href="#">' + esc(t.call) + '</a>';
       return d;
     }
-    var s = doc.createElement('section');
-    s.setAttribute('data-block', id);
-    s.innerHTML = '<div class="wrap">' + sections[id](n, lang, t) + '</div>';
-    return s;
+    var slot = doc.createElement('div');
+    slot.className = 'slot';
+    slot.setAttribute('data-block', id);
+    slot.innerHTML = '<section><div class="wrap">' + sections[id](n, lang, t) + '</div></section>';
+    return slot;
   }
 
   /* ── Полная отрисовка ────────────────────────────────────────── */
@@ -286,7 +298,7 @@ window.CFGPreview = (function () {
       if (id === 'messengers') root.appendChild(el); else main.appendChild(el);
     });
     if (animate) {
-      var all = root.querySelectorAll('[data-block], .hero, main > section');
+      var all = root.querySelectorAll('.hero, main > section, main > .slot, .msg');
       Array.prototype.forEach.call(all, function (el, i) {
         el.style.setProperty('--d', Math.min(i * 0.07, 0.7) + 's');
         el.classList.add('pv-in');
@@ -295,28 +307,47 @@ window.CFGPreview = (function () {
   }
 
   /* ── Один блок включили или выключили ────────────────────────── */
-  function toggle(doc, state, lang, id, on) {
+  function toggle(doc, state, lang, id, on, instant) {
     var root = doc.querySelector('.pv-root');
-    if (!root) return;
+    if (!root) return null;
     var existing = root.querySelector('[data-block="' + id + '"]');
     if (!on) {
-      if (existing) existing.parentNode.removeChild(existing);
-      return;
+      if (!existing) return null;
+      if (instant) { existing.parentNode.removeChild(existing); return null; }
+      existing.classList.add('is-shut');
+      var gone = false;
+      var drop = function () {
+        if (gone || !existing.parentNode) return;
+        gone = true;
+        existing.parentNode.removeChild(existing);
+      };
+      existing.addEventListener('transitionend', drop);
+      setTimeout(drop, 650); // если переход не случился (вкладка в фоне)
+      return null;
     }
-    if (existing) return;
+    if (existing) return null;
     var n = byId(CFG.niches, state.niche);
     var el = sectionEl(doc, id, n, lang, CFG.pv[lang]);
-    el.classList.add('pv-in');
-    if (id === 'messengers') { root.appendChild(el); return; }
-    var main = root.querySelector('main');
-    var idx = ORDER.indexOf(id);
-    var next = null;
-    Array.prototype.forEach.call(main.querySelectorAll('[data-block]'), function (s) {
-      if (next) return;
-      var o = ORDER.indexOf(s.getAttribute('data-block'));
-      if (o > idx) next = s;
-    });
-    main.insertBefore(el, next);
+    if (!instant) el.classList.add('is-shut');
+    if (id === 'messengers') {
+      root.appendChild(el);
+    } else {
+      var main = root.querySelector('main');
+      var idx = ORDER.indexOf(id);
+      var next = null;
+      Array.prototype.forEach.call(main.querySelectorAll('[data-block]'), function (sl) {
+        if (next) return;
+        if (ORDER.indexOf(sl.getAttribute('data-block')) > idx) next = sl;
+      });
+      main.insertBefore(el, next);
+    }
+    if (!instant) {
+      // следующий кадр: высота едет от нуля к своей
+      var win = doc.defaultView;
+      win.requestAnimationFrame(function () {
+        win.requestAnimationFrame(function () { el.classList.remove('is-shut'); });
+      });
+    }
     return el;
   }
 
@@ -325,23 +356,5 @@ window.CFGPreview = (function () {
     return list[0];
   }
 
-  /* ── Отдельный файл для «открыть целиком» ────────────────────── */
-  function standalone(state, lang) {
-    var doc = document.implementation.createHTMLDocument('');
-    doc.documentElement.innerHTML = '<head><meta charset="utf-8">' +
-      '<meta name="viewport" content="width=device-width, initial-scale=1">' +
-      '<link id="pv-font" rel="stylesheet" href="">' +
-      '<style>' + CSS + '</style></head><body></body>';
-    var theme = byId(CFG.themes, state.theme);
-    setTheme(doc, theme);
-    render(doc, state, lang, false);
-    var n = byId(CFG.niches, state.niche);
-    doc.title = n.brand[lang] + ' — ' + CFG.ui[lang].previewTitle;
-    var s = doc.createElement('script');
-    s.textContent = SCRIPT;
-    doc.body.appendChild(s);
-    return '<!DOCTYPE html>' + doc.documentElement.outerHTML;
-  }
-
-  return { shell: shell, setTheme: setTheme, render: render, toggle: toggle, standalone: standalone, byId: byId };
+  return { shell: shell, setTheme: setTheme, render: render, toggle: toggle, byId: byId };
 })();

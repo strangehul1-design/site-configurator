@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════
    Содержимое конфигуратора: нишы, оформления, блоки и подписи.
 
-   Всё, что видно на странице и в предпросмотре, лежит здесь — в двух
+   Всё, что видно на странице и в предпросмотре, лежит здесь - в двух
    языках. Тексты предпросмотра намеренно сделаны заполнителями:
-   цены показаны как «от 0 000 ₽», отзывы и адрес — подписями о том,
+   цены показаны как «от 0 000 ₽», отзывы и адрес - подписями о том,
    что сюда встанут настоящие. Выдуманных цифр и отзывов нет.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -89,7 +89,7 @@ window.CFG = (function () {
   ];
 
   /* ── Нишы ────────────────────────────────────────────────────
-     brand — выдуманное демо-название, так и подписано в предпросмотре. */
+     brand - выдуманное демо-название, так и подписано в предпросмотре. */
   var niches = [
     {
       id: 'bakery',
@@ -101,7 +101,7 @@ window.CFG = (function () {
       nav: { ru: ['Торты', 'Цены', 'Доставка', 'Контакты'], en: ['Cakes', 'Prices', 'Delivery', 'Contact'] },
       h1: { ru: 'Торты на заказ<br>для домашних праздников', en: 'Custom cakes<br>for family celebrations' },
       lead: {
-        ru: 'Собираем вкус, начинку и оформление под повод. Привозим ко дню и часу — по городу и пригороду.',
+        ru: 'Собираем вкус, начинку и оформление под повод. Привозим ко дню и часу - по городу и пригороду.',
         en: 'Flavour, filling and decoration built around the occasion. Delivered on the day and hour you need, across the city and nearby.'
       },
       cta: { ru: 'Рассчитать торт', en: 'Price my cake' },
@@ -112,7 +112,7 @@ window.CFG = (function () {
       },
       services: {
         ru: [
-          ['Торты на заказ', 'Высота, ярусы, надпись и цвет — под ваш повод.'],
+          ['Торты на заказ', 'Высота, ярусы, надпись и цвет - под ваш повод.'],
           ['Наборы пирожных', 'Для подарка, фуршета или офиса.'],
           ['Свадебный стол', 'Торт и десерты в одном оформлении.']
         ],
@@ -124,14 +124,14 @@ window.CFG = (function () {
       },
       gallery: { ru: ['Ярусный торт', 'Бенто-торт', 'Пирожные', 'Оформление стола'], en: ['Tiered cake', 'Bento cake', 'Pastries', 'Dessert table'] },
       price: {
-        ru: [['Бенто-торт', '400–500 г'], ['Торт один ярус', '1,5–3 кг'], ['Два яруса', 'от 4 кг']],
-        en: [['Bento cake', '400–500 g'], ['Single tier', '1.5–3 kg'], ['Two tiers', 'from 4 kg']]
+        ru: [['Бенто-торт', '400-500 г'], ['Торт один ярус', '1,5-3 кг'], ['Два яруса', 'от 4 кг']],
+        en: [['Bento cake', '400-500 g'], ['Single tier', '1.5-3 kg'], ['Two tiers', 'from 4 kg']]
       },
       faq: {
         ru: [['За сколько дней заказывать?', 'Здесь будет ваш ответ про срок заказа.'], ['Можно без мастики?', 'Здесь будет ваш ответ про оформление.'], ['Как с доставкой?', 'Здесь будет ваш ответ про доставку и самовывоз.']],
         en: [['How far ahead should I order?', 'Your answer about lead time goes here.'], ['Can you skip fondant?', 'Your answer about decoration goes here.'], ['What about delivery?', 'Your answer about delivery and pickup goes here.']]
       },
-      place: { ru: ['Кондитерская', 'Адрес подставим ваш', 'Пн–Сб, 10:00–20:00'], en: ['Bakery', 'Your address goes here', 'Mon–Sat, 10:00–20:00'] }
+      place: { ru: ['Кондитерская', 'Адрес подставим ваш', 'Пн-Сб, 10:00-20:00'], en: ['Bakery', 'Your address goes here', 'Mon-Sat, 10:00-20:00'] }
     },
     {
       id: 'fitness',
@@ -173,7 +173,7 @@ window.CFG = (function () {
         ru: [['Я никогда не тренировался', 'Здесь будет ваш ответ про новичков.'], ['Что взять с собой?', 'Здесь будет ваш ответ про форму и воду.'], ['Можно заморозить абонемент?', 'Здесь будет ваш ответ про заморозку.']],
         en: [['I have never trained', 'Your answer for beginners goes here.'], ['What should I bring?', 'Your answer about kit goes here.'], ['Can I freeze my pass?', 'Your answer about freezing goes here.']]
       },
-      place: { ru: ['Студия', 'Адрес подставим ваш', 'Ежедневно, 07:00–22:00'], en: ['Studio', 'Your address goes here', 'Daily, 07:00–22:00'] }
+      place: { ru: ['Студия', 'Адрес подставим ваш', 'Ежедневно, 07:00-22:00'], en: ['Studio', 'Your address goes here', 'Daily, 07:00-22:00'] }
     },
     {
       id: 'beauty',
@@ -215,7 +215,7 @@ window.CFG = (function () {
         ru: [['Сколько длится окрашивание?', 'Здесь будет ваш ответ про время.'], ['Нужна консультация?', 'Здесь будет ваш ответ про подбор.'], ['Как отменить запись?', 'Здесь будет ваш ответ про отмену.']],
         en: [['How long does colour take?', 'Your answer about timing goes here.'], ['Do I need a consultation?', 'Your answer about consultations goes here.'], ['How do I cancel?', 'Your answer about cancelling goes here.']]
       },
-      place: { ru: ['Салон', 'Адрес подставим ваш', 'Пн–Вс, 09:00–21:00'], en: ['Salon', 'Your address goes here', 'Mon–Sun, 09:00–21:00'] }
+      place: { ru: ['Салон', 'Адрес подставим ваш', 'Пн-Вс, 09:00-21:00'], en: ['Salon', 'Your address goes here', 'Mon-Sun, 09:00-21:00'] }
     },
     {
       id: 'craft',
@@ -257,7 +257,7 @@ window.CFG = (function () {
         ru: [['Нужен опыт?', 'Здесь будет ваш ответ про уровень.'], ['Когда забирать изделие?', 'Здесь будет ваш ответ про обжиг и сроки.'], ['Делаете подарочные сертификаты?', 'Здесь будет ваш ответ про сертификаты.']],
         en: [['Do I need experience?', 'Your answer about skill level goes here.'], ['When can I collect my piece?', 'Your answer about firing and timing goes here.'], ['Do you sell gift cards?', 'Your answer about gift cards goes here.']]
       },
-      place: { ru: ['Мастерская', 'Адрес подставим ваш', 'Вт–Сб, 11:00–19:00'], en: ['Workshop', 'Your address goes here', 'Tue–Sat, 11:00–19:00'] }
+      place: { ru: ['Мастерская', 'Адрес подставим ваш', 'Вт-Сб, 11:00-19:00'], en: ['Workshop', 'Your address goes here', 'Tue-Sat, 11:00-19:00'] }
     },
     {
       id: 'repair',
@@ -299,7 +299,7 @@ window.CFG = (function () {
         ru: [['Когда сможете приехать?', 'Здесь будет ваш ответ про сроки выезда.'], ['Материалы ваши или мои?', 'Здесь будет ваш ответ про материалы.'], ['Есть договор и гарантия?', 'Здесь будет ваш ответ про документы.']],
         en: [['When can you come?', 'Your answer about availability goes here.'], ['Who buys the parts?', 'Your answer about materials goes here.'], ['Is there a contract?', 'Your answer about paperwork goes here.']]
       },
-      place: { ru: ['Район работы', 'Город подставим ваш', 'Пн–Вс, 08:00–21:00'], en: ['Service area', 'Your city goes here', 'Mon–Sun, 08:00–21:00'] }
+      place: { ru: ['Район работы', 'Город подставим ваш', 'Пн-Вс, 08:00-21:00'], en: ['Service area', 'Your city goes here', 'Mon-Sun, 08:00-21:00'] }
     },
     {
       id: 'expert',
@@ -348,23 +348,30 @@ window.CFG = (function () {
   /* ── Подписи интерфейса ──────────────────────────────────────── */
   var ui = {
     ru: {
-      steps: ['Ниша', 'Оформление', 'Блоки', 'Итог'],
-      stepNote: ['Ближе всего к вашему делу — тексты в предпросмотре подставятся под неё.', 'Цвета, шрифты и форма кнопок. Содержимое останется тем же.', 'Что должно быть на странице. Первый экран и услуги есть всегда.', 'Что получилось и как это ко мне попадёт.'],
-      previewTitle: 'Предпросмотр',
+      steps: ['Ниша', 'Оформление', 'Блоки', 'Что получилось'],
+      stepNote: [
+        'Ближе всего к вашему делу: тексты справа подставятся под неё.',
+        'Цвета, шрифты и форма кнопок. Содержимое останется тем же.',
+        'Что должно быть на странице. Первый экран и услуги есть всегда.',
+        'Сборка целиком и как она ко мне попадёт.'
+      ],
+      previewTitle: 'Собранный сайт',
+      blocksN: ['блок', 'блока', 'блоков'],
+      inBuild: 'в сборке',
+      tallyPrice: 'от 26 000 ₽ под ключ',
       briefNiche: 'Ниша',
       briefTheme: 'Оформление',
       briefBlocks: 'Блоки',
-      priceTitle: 'Сколько это стоит',
-      priceMain: 'Сайт под ключ — от 26 000 ₽',
-      priceMainNote: 'от идеи до запуска: страница, тексты по вашим данным, форма заявки, публикация',
+      none: 'нет',
+      priceMain: 'Сайт под ключ от 26 000 ₽',
+      priceMainNote: 'От идеи до запуска: страница, тексты по вашим данным, форма заявки, публикация.',
       priceRows: [['Хостинг', '5 038 ₽ в год'], ['Домен .ru', '169 ₽ в год']],
-      priceNote: 'Хостинг и домен оплачиваются напрямую у регистратора. Точную смету по вашему набору блоков пришлю после короткого разговора — цифры за каждый блок придумывать не буду.',
-      sendTitle: 'Отправить сборку мне',
+      priceNote: 'Хостинг и домен оплачиваются напрямую у регистратора. Точную смету по вашему набору блоков пришлю после короткого разговора: цифры за каждый блок я не придумываю.',
       tg: 'Написать в Telegram',
-      tgNote: 'Сборка скопируется — вставьте её в сообщение',
+      tgNote: 'Сборка копируется в буфер: вставьте её в сообщение.',
       mail: 'Письмо на почту',
       copyLink: 'Скопировать ссылку',
-      copyLinkNote: 'Ссылка открывает ровно эту сборку',
+      copyLinkNote: 'Ссылка открывает ровно эту сборку.',
       copied: 'Скопировано',
       vk: 'ВКонтакте',
       briefHead: 'Сборка сайта',
@@ -372,23 +379,30 @@ window.CFG = (function () {
       mailSubject: 'Сборка сайта из конфигуратора'
     },
     en: {
-      steps: ['Niche', 'Look', 'Blocks', 'Summary'],
-      stepNote: ['Closest to your business — the preview text follows your choice.', 'Colours, type and button shape. The content stays the same.', 'What goes on the page. The first screen and services are always there.', 'What you built and how it reaches me.'],
-      previewTitle: 'Preview',
+      steps: ['Niche', 'Look', 'Blocks', 'Your build'],
+      stepNote: [
+        'Closest to your business: the text on the right follows your choice.',
+        'Colours, type and button shape. The content stays the same.',
+        'What goes on the page. The first screen and services are always there.',
+        'The whole build and how it reaches me.'
+      ],
+      previewTitle: 'The assembled site',
+      blocksN: ['block', 'blocks'],
+      inBuild: 'in the build',
+      tallyPrice: 'from 26 000 ₽, start to finish',
       briefNiche: 'Niche',
       briefTheme: 'Look',
       briefBlocks: 'Blocks',
-      priceTitle: 'What it costs',
-      priceMain: 'Website, start to finish — from 26 000 ₽',
-      priceMainNote: 'from idea to launch: the page, copy based on your material, a request form, publishing',
-      priceRows: [['Hosting', '5 038 ₽ per year'], ['.ru domain', '169 ₽ per year']],
-      priceNote: 'Hosting and the domain are paid directly to the registrar. I will send an exact quote for your set of blocks after a short talk — I am not going to invent a per-block price list.',
-      sendTitle: 'Send the build to me',
+      none: 'none',
+      priceMain: 'Site, start to finish, from 26 000 ₽',
+      priceMainNote: 'From idea to launch: the page, copy based on your material, a request form, publishing.',
+      priceRows: [['Hosting', '5 038 ₽ a year'], ['.ru domain', '169 ₽ a year']],
+      priceNote: 'Hosting and the domain are paid directly to the registrar. I will send an exact quote for your set of blocks after a short talk: I do not invent a per-block price list.',
       tg: 'Message on Telegram',
-      tgNote: 'The build is copied — paste it into the chat',
+      tgNote: 'The build is copied to your clipboard: paste it into the chat.',
       mail: 'Send an email',
       copyLink: 'Copy the link',
-      copyLinkNote: 'The link opens exactly this build',
+      copyLinkNote: 'The link opens exactly this build.',
       copied: 'Copied',
       vk: 'VK',
       briefHead: 'Website build',
@@ -408,12 +422,12 @@ window.CFG = (function () {
       priceValue: 'от 0 000 ₽',
       priceNote: 'Цены подставим ваши',
       reviews: 'Отзывы',
-      reviewText: 'Здесь будет отзыв клиента. Соберём настоящие — из сообщений, карт и соцсетей.',
+      reviewText: 'Здесь будет отзыв клиента. Соберём настоящие - из сообщений, карт и соцсетей.',
       reviewName: 'Имя клиента',
       reviewSrc: 'источник отзыва',
       faq: 'Вопросы и ответы',
       booking: 'Онлайн-запись',
-      bookingNote: 'Выберите день и время — заявка придёт вам в Telegram или на почту',
+      bookingNote: 'Выберите день и время - заявка придёт вам в Telegram или на почту',
       bookingBtn: 'Записаться',
       days: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
       times: ['10:00', '12:30', '15:00', '18:30'],
@@ -444,7 +458,7 @@ window.CFG = (function () {
       reviewSrc: 'where it came from',
       faq: 'Questions and answers',
       booking: 'Online booking',
-      bookingNote: 'Pick a day and time — the request reaches you on Telegram or by email',
+      bookingNote: 'Pick a day and time - the request reaches you on Telegram or by email',
       bookingBtn: 'Book',
       days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
       times: ['10:00', '12:30', '15:00', '18:30'],
